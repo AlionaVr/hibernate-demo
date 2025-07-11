@@ -2,7 +2,6 @@ package org.hibernatedemo.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import org.hibernatedemo.entity.Person;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,23 +13,21 @@ public class PersonsRepositoryImpl implements PersonsRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
     @Override
+    @Transactional(readOnly = true)
     public List<Person> getPersonsByCityFiltered(String city) {
-        TypedQuery<Person> query = entityManager.createQuery(
-                "SELECT p FROM Person p", Person.class);
-        List<Person> allPersons = query.getResultList();
-        return allPersons.stream()
-                .filter(person -> city.equalsIgnoreCase(person.getCity()))
-                .toList();
+        return entityManager.createQuery(
+                        "SELECT p FROM Person p WHERE LOWER(p.city) = LOWER(:city)", Person.class)
+                .setParameter("city", city)
+                .getResultList();
     }
 
-    @Transactional
     @Override
+    @Transactional(readOnly = true)
     public List<Person> getPersonByCompositeKey(String name, String surname, int age) {
-        TypedQuery<Person> query = entityManager.createQuery(
-                "SELECT p FROM Person p WHERE p.id.age > :age ORDER BY p.id.age DESC", Person.class);
-        query.setParameter("age", age);
-        return query.getResultList();
+        return entityManager.createQuery(
+                        "SELECT p FROM Person p WHERE p.id.age > :age ORDER BY p.id.age DESC", Person.class)
+                .setParameter("age", age)
+                .getResultList();
     }
 }
