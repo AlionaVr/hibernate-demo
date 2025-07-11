@@ -1,2 +1,128 @@
-### Получить всех по городу
-GET http://localhost:8080/persons/by-city?city=Moscow
+### Создание новых записей (POST)
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "John",
+    "surname": "Doe",
+    "age": 25
+  },
+  "phoneNumber": "+1234567890",
+  "city": "New York"
+}
+
+###
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "Jone",
+    "surname": "Smith",
+    "age": 30
+  },
+  "phoneNumber": "+1987654321",
+  "city": "Moscow"
+}
+
+### Получение данных (GET)
+### Получение всех записей
+GET http://localhost:8080/persons
+
+### Получение с пагинацией
+GET http://localhost:8080/persons?page=0&size=2
+
+###Получение по городу
+GET http://localhost:8080/persons/by-city?city=New York
+
+### Получение по городу (разные регистры)
+GET http://localhost:8080/persons/by-city?city=new york
+
+###Получение по возрасту (меньше 30)
+GET http://localhost:8080/persons/by-age?age=30
+
+###Получение по имени и фамилии
+GET http://localhost:8080/persons/by-name-surname?name=John&surname=Doe
+
+### Получение конкретной записи по ID
+GET http://localhost:8080/persons/Jonn/Doe/25
+
+### Обновление записи (PUT)
+### Обновление города и телефона
+PUT http://localhost:8080/persons/update/John/Doe/25
+Content-Type: application/json
+
+### Удаление записи (DELETE)
+DELETE http://localhost:8080/persons/delete/John/Doe/25
+
+###
+### Тестирование edge cases
+###Создание с невалидными данными - пустое имя
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "",
+    "surname": "Test",
+    "age": 25
+  },
+  "phoneNumber": "+1234567890",
+  "city": "Test City"
+}
+
+###Создание с невалидными данными - отрицательный возраст
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "Test",
+    "surname": "User",
+    "age": -5
+  },
+  "phoneNumber": "+1234567890",
+  "city": "Test City"
+}
+
+###Создание с невалидными данными - возраст больше 109
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "Test",
+    "surname": "User",
+    "age": 150
+  },
+  "phoneNumber": "+1234567890",
+  "city": "Test City"
+}
+
+### Создание с невалидными данными - пустой телефон
+POST http://localhost:8080/persons/add
+Content-Type: application/json
+
+{
+  "id": {
+    "name": "Test",
+    "surname": "User",
+    "age": 25
+  },
+  "phoneNumber": "",
+  "city": "Test City"
+}
+
+###Поиск с пустым городом
+GET http://localhost:8080/persons/by-city?city=
+
+
+###Поиск с отрицательным возрастом
+GET http://localhost:8080/persons/by-age?age=-1
+
+###Поиск несуществующей записи
+GET http://localhost:8080/persons/NonExistent/User/99
+
+###Поиск по несуществующему городу
+GET http://localhost:8080/persons/by-city?city=NonExistentCity
