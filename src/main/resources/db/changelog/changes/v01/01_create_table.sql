@@ -1,3 +1,5 @@
+SET search_path TO public;
+
 CREATE TABLE person
 (
     name           varchar(60)        NOT NULL,
