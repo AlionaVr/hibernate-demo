@@ -1,10 +1,13 @@
 package org.hibernatedemo.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Data

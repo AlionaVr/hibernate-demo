@@ -29,7 +29,7 @@ public class PersonsService {
 
     public Person getPersonsByNameAndSurname(String name, String surname) {
         return personRepository.findById_NameAndId_Surname(name, surname)
-                .orElseThrow(() -> new RuntimeException("No person found with name: " + name + " and surname: " + surname));
+                .orElseThrow(() -> new PersonNotFoundException("No person found with name: " + name + " and surname: " + surname));
     }
 
     @Transactional

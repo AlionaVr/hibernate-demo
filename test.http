@@ -62,7 +62,8 @@ Content-Type: application/json
 }
 
 ### Удаление записи (DELETE)
-DELETE http://localhost:8080/persons/delete/John/Doe/25
+DELETE http://localhost:8080/persons/delete/Ann/Doe/25
+Authorization: Basic YWRtaW46YWRtaW5wYXNz
 
 ###
 ### Тестирование edge cases
