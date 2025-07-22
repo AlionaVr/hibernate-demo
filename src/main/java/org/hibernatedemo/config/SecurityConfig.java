@@ -32,17 +32,17 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         UserDetails reader = User.withUsername("reader")
                 .password(encoder.encode("password"))
-                .roles("read")
+                .roles("READ")
                 .build();
 
         UserDetails writer = User.withUsername("writer")
                 .password(encoder.encode("password"))
-                .roles("write")
+                .roles("WRITE")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
                 .password(encoder.encode("password"))
-                .roles("read", "write", "delete")
+                .roles("READ", "WRITE", "DELETE")
                 .build();
         return new InMemoryUserDetailsManager(reader, writer, admin);
     }
@@ -54,10 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/persons").permitAll()
                         .requestMatchers("/persons/by-age",
                                 "/persons/by-name-surname",
-                                "/persons/by-city").hasRole("read")
+                                "/persons/by-city").hasRole("READ")
                         .requestMatchers("/persons/add",
-                                "/persons/update/**").hasRole("write")
-                        .requestMatchers("/persons/delete/**").hasRole("delete")
+                                "/persons/update/**").hasRole("WRITE")
+                        .requestMatchers("/persons/delete/**").hasRole("DELETE")
                         .anyRequest().authenticated())
                 .httpBasic(httpBasic -> httpBasic.realmName("Persons API"))
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll
