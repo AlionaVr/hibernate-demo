@@ -3,6 +3,7 @@ package org.hibernatedemo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,6 +17,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableMethodSecurity(
+        securedEnabled = true,       // включает @Secured
+        jsr250Enabled = true,        // включает @RolesAllowed
+        prePostEnabled = true)      // включает @PreAuthorize / @PostAuthorize
 public class SecurityConfig {
 
     @Bean
@@ -25,15 +30,21 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        UserDetails user = User.withUsername("user")
+        UserDetails reader = User.withUsername("reader")
                 .password(encoder.encode("password"))
-                .authorities("read")
+                .roles("read")
                 .build();
+
+        UserDetails writer = User.withUsername("writer")
+                .password(encoder.encode("password"))
+                .roles("write")
+                .build();
+
         UserDetails admin = User.withUsername("admin")
-                .password(encoder.encode("adminpass"))
-                .authorities("read", "write")
+                .password(encoder.encode("password"))
+                .roles("read", "write", "delete")
                 .build();
-        return new InMemoryUserDetailsManager(user, admin);
+        return new InMemoryUserDetailsManager(reader, writer, admin);
     }
 
     @Bean
@@ -43,10 +54,10 @@ public class SecurityConfig {
                         .requestMatchers("/persons").permitAll()
                         .requestMatchers("/persons/by-age",
                                 "/persons/by-name-surname",
-                                "/persons/by-city").hasAuthority("read")
+                                "/persons/by-city").hasRole("read")
                         .requestMatchers("/persons/add",
-                                "/persons/delete/**",
-                                "/persons/update/**").hasAuthority("write")
+                                "/persons/update/**").hasRole("write")
+                        .requestMatchers("/persons/delete/**").hasRole("delete")
                         .anyRequest().authenticated())
                 .httpBasic(httpBasic -> httpBasic.realmName("Persons API"))
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll
